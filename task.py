@@ -18,7 +18,9 @@ class Agent():
         # 初始化时候就登录
         self.shanbay.login()
         # 新帖子的id
+        # for test:
         self.thread_id = "3128002"
+        # self.thread_id = ""
         # 成员打卡情况
         self.status = {}
         # 总体情况
@@ -87,7 +89,7 @@ class Agent():
 
     def git_push(self):
         """push 到 GitHub"""
-        cmd = f"cd {curr_path} && git add . && git commit -m 'checking done' && git push"
+        cmd = f"cd {curr_path} && git pull && git add . && git commit -m 'checking done' && git push"
         p = os.popen(cmd)
         msg = p.read()
         logging.info(f"[git push result]: {msg}")
