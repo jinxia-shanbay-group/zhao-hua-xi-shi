@@ -18,9 +18,7 @@ class Agent():
         # 初始化时候就登录
         self.shanbay.login()
         # 新帖子的id
-        # for test:
-        self.thread_id = "3128002"
-        # self.thread_id = ""
+        self.thread_id = ""
         # 成员打卡情况
         self.status = {}
         # 总体情况
@@ -47,9 +45,6 @@ class Agent():
 
     def create_thread(self):
         """创建打卡帖"""
-        shanbay = Shanbay(USERNAME, PASSWORD)
-        shanbay.login()
-
         title = self.ctime.strftime("朝花惜时【%m.%d】🌸")
         content = "\n\r\n\r".join([
             "# >>朝花惜时打卡帖<<",
@@ -59,7 +54,7 @@ class Agent():
             *self.foot().values()
         ])
 
-        self.thread_id = shanbay.new_thread(title, content)
+        self.thread_id = self.shanbay.new_thread(title, content)
         logging.info(f"[thread id]: {self.thread_id}")
 
         self.shanbay.set_thread(self.thread_id, "activity")
@@ -93,7 +88,8 @@ class Agent():
 
     def git_push(self):
         """push 到 GitHub"""
-        cmd = f"cd {curr_path} && git pull && git add . && git commit -m 'checking done' && git push"
+        date = self.ctime.strftime("%Y-%m-%d")
+        cmd = f"cd {curr_path} && git pull && git add . && git commit -m 'log: {date}' && git push"
         p = os.popen(cmd)
         msg = p.read()
         logging.info(f"[git push result]: {msg}")
@@ -124,13 +120,13 @@ if __name__ == '__main__':
     shanbay = Shanbay(USERNAME, PASSWORD)
     spider = Spider()
     agent = Agent(shanbay, spider)
-    # agent.create_thread()
+    agent.create_thread()
 
-    # 5:00-8:00
-    # time.sleep(3600 * 3 + 10)
+    # 5:00 - 8:00
+    time.sleep(3600 * 3 + 10)
 
     # 查卡
     agent.online_check()
     agent.local_record()
-    # agent.online_report()
-    # agent.git_push()
+    agent.online_report()
+    agent.git_push()
