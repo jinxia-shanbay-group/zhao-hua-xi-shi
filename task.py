@@ -29,9 +29,13 @@ class Agent():
     def foot(self):
         """构造帖子附加内容"""
         methods = ["get_quote", "get_joke1", "get_joke2"]
-        content = getattr(self.spider, methods[random.randint(0, 2)])()
-        # body 部分每一行要加 >
-        content["body"] = "\n\r\n\r".join(map(lambda s: "> " + s, content["body"].split("\n")))
+        try:
+            content = getattr(self.spider, methods[random.randint(0, 2)])()
+            # body 部分每一行要加 >
+            content["body"] = "\n\r\n\r".join(map(lambda s: "> " + s, content["body"].split("\n")))
+        except Exception as e:
+            content = {}
+            logging.error(f"[build foot content failed]: {e}")
         return content
 
     @property
@@ -70,7 +74,7 @@ class Agent():
 
     def local_record(self):
         """将查卡情况写进 markdown 文件"""
-        with open(self.ctime.strftime("check_log/%Y-%m.md"), 'r') as f:
+        with open(self.ctime.strftime(os.path.join(curr_path, "check_log/%Y-%m.md")), 'r') as f:
             line = f.readline().strip()
             names = list(map(lambda x: x.strip(), line.split("|")[2:-1]))
 
@@ -84,7 +88,7 @@ class Agent():
                            "\n",
                            ])
 
-        with open(self.ctime.strftime("check_log/%Y-%m.md"), 'a') as f:
+        with open(self.ctime.strftime(os.path.join(curr_path, "check_log/%Y-%m.md")), 'a') as f:
             f.write(record)
 
     def git_push(self):
