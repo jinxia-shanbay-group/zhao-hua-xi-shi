@@ -73,7 +73,7 @@ class Agent():
             line = f.readline().strip()
             names = list(map(lambda x: x.strip(), line.split("|")[2:-1]))
 
-        flag = {True: "✔", False: "❌"}
+        flag = {True: "✔️", False: "❌"}
         # 每个人的打卡状态 {"who":True/False, ...}
         result = [self.status.get(n) for n in names]
 
