@@ -18,7 +18,7 @@ class Spider():
     def get_quote(self):
         """获取扇贝首页的每日格言"""
         q_json = self.s.get(quote_url).json()
-        head = "#>> Quote of The Day<<"
+        head = "# >>Quote of The Day<<"
         neck = f"*author: {q_json['data']['author']}*"
         body = q_json['data']['content']
 
@@ -31,12 +31,12 @@ class Spider():
     def get_joke1(self):
         """获取每日笑话"""
         domain = extract(joke_url1).domain
-        head = "#>> Joke of The Day<<"
+        head = "# >>Joke of The Day<<"
         neck = f"*from [{domain}]({joke_url1})*"
 
         html = self.s.get(joke_url1).text
         soup = BeautifulSoup(html, "lxml")
-        body = soup.find_all(class_="card-content")[0].text.strip()
+        body = soup.find(class_="card-content").text.strip()
 
         return {
             "head": head,
@@ -47,18 +47,18 @@ class Spider():
     def get_joke2(self):
         """获取每日笑话"""
         domain = extract(joke_url2).domain
-        head = "#>> Joke of The Day<<"
+        head = "# >>Joke of The Day<<"
         neck = f"*from [{domain}]({joke_url2})*"
 
         html = self.s.get(joke_url2).text
         soup = BeautifulSoup(html, "lxml")
-        jq = soup.find_all(class_="joke-question")[0].text.strip()
-        ja = soup.find_all(class_="joke-answer")[0].text.strip()
+        jq = soup.find(class_="joke-question").text.strip()
+        ja = soup.find(class_="joke-answer").text.strip()
 
         if "Punch line" in ja:
-            body = f"*from [{domain}]({joke_url2})*\n{jq}\n{ja}"
+            body = jq + "\n" + ja
         else:
-            body = f"*from [{domain}]({joke_url2})*\n{jq}"
+            body = jq
 
         return {
             "head": head,
@@ -68,7 +68,7 @@ class Spider():
 
 
 if __name__ == '__main__':
-    spider = Spider()
-    quote = spider.get_quote()
-    joke = spider.get_joke1()
-    print(joke)
+    sp = Spider()
+    print(sp.get_quote())
+    print(sp.get_joke1())
+    print(sp.get_joke2())

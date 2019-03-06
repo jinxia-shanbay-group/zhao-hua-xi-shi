@@ -1,6 +1,5 @@
 USERNAME = "voldikss"
 PASSWORD = "sb20190303"
-TEAM_ID = "381970"
 
 MEMBERS = [
     "今夏✨芷佩",

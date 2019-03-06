@@ -1,0 +1,4 @@
+tldextract
+requests
+pytz
+beautifulsoup4
