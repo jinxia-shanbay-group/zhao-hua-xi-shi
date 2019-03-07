@@ -69,7 +69,23 @@ class Agent():
 
     def local_record(self):
         """将查卡情况写进 markdown 文件"""
-        with open(self.ctime.strftime(os.path.join(curr_path, "check_log/%Y-%m.md")), 'r') as f:
+        log_fpath = self.ctime.strftime(os.path.join(curr_path, "check_log/%Y-%m.md"))
+
+        if not os.path.exists(log_fpath):
+            header = "|".join(["",
+                               "date",
+                               *self.status.values(),
+                               "\n"
+                               ])
+            necker = "|".join(["",
+                *["---"]*len(self.status),
+                "\n"
+                ])
+            with open(log_fpath,'w') as f:
+                f.write(header)
+                f.write(necker)
+
+        with open(log_fpath, 'r') as f:
             line = f.readline().strip()
             names = list(map(lambda x: x.strip(), line.split("|")[2:-1]))
 
@@ -80,16 +96,16 @@ class Agent():
         record = "|".join(["",
                            self.ctime.strftime("%m/%d"),
                            *[flag[s] for s in result],
-                           "\n",
+                           "\n"
                            ])
 
-        with open(self.ctime.strftime(os.path.join(curr_path, "check_log/%Y-%m.md")), 'a') as f:
+        with open(log_fpath, 'a') as f:
             f.write(record)
 
     def git_push(self):
         """push 到 GitHub"""
         date = self.ctime.strftime("%Y-%m-%d")
-        cmd = f"cd {curr_path} && git pull && git add . && git commit -m 'log: {date}' && git push"
+        cmd = f"cd {curr_path} && git fetch --all && git reset --hard origin/master && git add check_log/ && git commit -m 'log: {date}' && git push"
         p = os.popen(cmd)
         msg = p.read()
         logging.info(f"[git push result]: {msg}")
