@@ -78,10 +78,10 @@ class Agent():
                                "\n"
                                ])
             necker = "|".join(["",
-                *["---"]*len(self.status),
-                "\n"
-                ])
-            with open(log_fpath,'w') as f:
+                               *["---"]*len(self.status),
+                               "\n"
+                               ])
+            with open(log_fpath, 'w') as f:
                 f.write(header)
                 f.write(necker)
 
@@ -105,7 +105,7 @@ class Agent():
     def git_push(self):
         """push 到 GitHub"""
         date = self.ctime.strftime("%Y-%m-%d")
-        cmd = f"cd {curr_path} && git fetch --all && git reset --hard origin/master && git add check_log/ && git commit -m 'log: {date}' && git push"
+        cmd = f"cd {curr_path} && git add check_log/ && git commit -m 'log: {date}' && git push -f"
         p = os.popen(cmd)
         msg = p.read()
         logging.info(f"[git push result]: {msg}")
@@ -143,6 +143,6 @@ if __name__ == '__main__':
 
     # 查卡
     agent.online_check()
-    agent.local_record()
     agent.online_report()
+    agent.local_record()
     agent.git_push()
