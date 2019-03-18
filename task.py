@@ -105,6 +105,11 @@ class Agent():
         with open(log_fpath, 'a') as f:
             f.write(record)
 
+    def git_pull(self):
+        "pull first"
+        cmd = f"cd {curr_path} && git pull"
+        os.popen(cmd)
+
     def git_push(self):
         """push 到 GitHub"""
         date = self.ctime.strftime("%Y-%m-%d")
@@ -147,5 +152,6 @@ if __name__ == '__main__':
     # 查卡
     agent.online_check()
     agent.online_report()
+    agent.git_pull()
     agent.local_record()
     agent.git_push()
