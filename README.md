@@ -11,6 +11,10 @@
 
 ### Usage
 
+- Clone the two repositories to the same directory
+    - [zhao-hua-xi-shi](https://github.com/jinxia-shanbay-group/zhao-hua-xi-shi)
+    - [zhao-hua-xi-shi-checkin-log](https://github.com/jinxia-shanbay-group/zhao-hua-xi-shi-checkin-log)
+
 - Install deps
 ```
 pip3 install -r requirements.txt

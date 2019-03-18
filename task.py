@@ -72,9 +72,9 @@ class Agent():
 
     def local_record(self):
         """将查卡情况写进 markdown 文件"""
-        log_fpath = self.ctime.strftime(os.path.join(curr_path, "check_log/%Y-%m.md"))
+        checkin_logfile = self.ctime.strftime(os.path.join(checkin_log_path, "%Y-%m.md"))
 
-        if not os.path.exists(log_fpath):
+        if not os.path.exists(checkin_logfile):
             header = "|".join(["",
                                "date",
                                *self.status.values(),
@@ -84,11 +84,11 @@ class Agent():
                                *["---"] * len(self.status),
                                "\n"
                                ])
-            with open(log_fpath, 'w') as f:
+            with open(checkin_logfile, 'w') as f:
                 f.write(header)
                 f.write(necker)
 
-        with open(log_fpath, 'r') as f:
+        with open(checkin_logfile, 'r') as f:
             line = f.readline().strip()
             names = list(map(lambda x: x.strip(), line.split("|")[2:-1]))
 
@@ -102,18 +102,18 @@ class Agent():
                            "\n"
                            ])
 
-        with open(log_fpath, 'a') as f:
+        with open(checkin_logfile, 'a') as f:
             f.write(record)
 
     def git_pull(self):
         "pull first"
-        cmd = f"cd {curr_path} && git pull"
+        cmd = f"cd {checkin_log_path} && git pull"
         os.popen(cmd)
 
     def git_push(self):
         """push 到 GitHub"""
         date = self.ctime.strftime("%Y-%m-%d")
-        cmd = f"cd {curr_path} && git add check_log/ && git commit -m 'log: {date}' && git push -f"
+        cmd = f"cd {checkin_log_path} && git add . && git commit -m 'checkin log: {date}' && git push -f"
         p = os.popen(cmd)
         msg = p.read()
         logging.info(f"[git push result]: {msg}")
@@ -132,9 +132,10 @@ class Agent():
 
 
 curr_path = os.path.dirname(os.path.abspath(__file__))
-log_path = os.path.join(curr_path, "task.log")
+checkin_log_path = os.path.join(curr_path, "../zhao-hua-xi-shi-checkin-log")
+logfile = os.path.join(curr_path, "task.log")
 
-logging.basicConfig(filename=log_path,
+logging.basicConfig(filename=logfile,
                     level='INFO',
                     format="%(asctime)s %(filename)s [%(funcName)s] [line: %(lineno)d]  %(message)s",
                     filemode='w')
