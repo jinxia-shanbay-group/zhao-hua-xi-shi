@@ -1,10 +1,7 @@
 import requests
+import os
 from bs4 import BeautifulSoup
 from tldextract import extract
-
-joke_url1 = "https://icanhazdadjoke.com/"
-joke_url2 = "https://goodriddlesnow.com/jokes/random"
-quote_url = "https://rest.shanbay.com/api/v2/quote/quotes/today/"
 
 
 class Spider():
@@ -17,10 +14,13 @@ class Spider():
 
     def get_quote(self):
         """获取扇贝首页的每日格言"""
+        quote_url = "https://rest.shanbay.com/api/v2/quote/quotes/today/"
         q_json = self.s.get(quote_url).json()
         head = "# >>Quote of The Day<<"
-        neck = f"*author: {q_json['data']['author']}*"
+        neck = f"*from: {q_json['data']['author']}*"
         body = q_json['data']['content']
+        # body 部分每一行要加 >
+        body = "\n\r\n\r".join(map(lambda s: "> " + s, body.split("\n")))
 
         return {
             "head": head,
@@ -28,15 +28,18 @@ class Spider():
             "body": body
         }
 
-    def get_joke1(self):
+    def get_joke(self):
         """获取每日笑话"""
-        domain = extract(joke_url1).domain
+        joke_url = "https://icanhazdadjoke.com/"
+        domain = extract(joke_url).domain
         head = "# >>Joke of The Day<<"
-        neck = f"*from [{domain}]({joke_url1})*"
+        neck = f"*from [{domain}]({joke_url})*"
 
-        html = self.s.get(joke_url1).text
+        html = self.s.get(joke_url).text
         soup = BeautifulSoup(html, "lxml")
         body = soup.find(class_="card-content").text.strip()
+        # body 部分每一行要加 >
+        body = "\n\r\n\r".join(map(lambda s: "> " + s, body.split("\n")))
 
         return {
             "head": head,
@@ -44,21 +47,14 @@ class Spider():
             "body": body
         }
 
-    def get_joke2(self):
-        """获取每日笑话"""
-        domain = extract(joke_url2).domain
-        head = "# >>Joke of The Day<<"
-        neck = f"*from [{domain}]({joke_url2})*"
+    def get_pic(self):
+        pic_url = "https://picsum.photos/1920/1080/?random"
+        head = "# >>Photo of The Day<<"
+        neck = "*from [picsum.photos](https://picsum.photos)*"
 
-        html = self.s.get(joke_url2).text
-        soup = BeautifulSoup(html, "lxml")
-        jq = soup.find(class_="joke-question").text.strip()
-        ja = soup.find(class_="joke-answer").text.strip()
-
-        if "Punch line" in ja:
-            body = jq + "\n" + ja
-        else:
-            body = jq
+        res = self.s.get(pic_url)
+        href = res.url
+        body = f"![]({href})"
 
         return {
             "head": head,
@@ -70,5 +66,5 @@ class Spider():
 if __name__ == '__main__':
     sp = Spider()
     print(sp.get_quote())
-    print(sp.get_joke1())
-    print(sp.get_joke2())
+    print(sp.get_joke())
+    print(sp.get_pic())

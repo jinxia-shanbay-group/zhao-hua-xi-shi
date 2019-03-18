@@ -17,8 +17,8 @@ def test_shanbay():
 def test_spider():
     sp = Spider()
     print(sp.get_quote())
-    print(sp.get_joke1())
-    print(sp.get_joke2())
+    print(sp.get_joke())
+    print(sp.get_pic())
 
 
 def test_task():
@@ -27,6 +27,7 @@ def test_task():
     spider = Spider()
     agent = Agent(shanbay, spider)
 
-    agent.thread_id = "3128002"
+    agent.thread_id = "3132893"
+    agent.add_foot()
     agent.online_check()
     agent.local_record()

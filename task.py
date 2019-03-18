@@ -24,17 +24,21 @@ class Agent():
         # 总体情况
         self.all_status = False
 
-    def foot(self):
+    def add_foot(self):
         """构造帖子附加内容"""
-        methods = ["get_quote", "get_joke1", "get_joke2"]
         try:
-            content = getattr(self.spider, methods[random.randint(0, 2)])()
-            # body 部分每一行要加 >
-            content["body"] = "\n\r\n\r".join(map(lambda s: "> " + s, content["body"].split("\n")))
+            foot = [
+                "---",
+                *self.spider.get_quote().values(),
+                "---",
+                *self.spider.get_joke().values(),
+                "---",
+                *self.spider.get_pic().values()
+            ]
         except Exception as e:
-            content = {}
+            foot = []
             logging.error(f"[build foot content failed]: {e}")
-        return content
+        return foot
 
     @property
     def ctime(self):
@@ -50,8 +54,7 @@ class Agent():
             "# >>朝花惜时打卡帖<<",
             "- **注意事项：**只有早上 5-8 点截图打卡才作数，其余不算哦～",
             "- **活动详情：** >>[点我了解](https://www.shanbay.com/team/thread/381970/3123197/)",
-            "---",
-            *self.foot().values()
+            *self.add_foot()
         ])
 
         self.thread_id = self.shanbay.new_thread(title, content)
@@ -78,7 +81,7 @@ class Agent():
                                "\n"
                                ])
             necker = "|".join(["",
-                               *["---"]*len(self.status),
+                               *["---"] * len(self.status),
                                "\n"
                                ])
             with open(log_fpath, 'w') as f:
