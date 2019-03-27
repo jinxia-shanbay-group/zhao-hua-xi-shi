@@ -18,7 +18,7 @@ class Spider():
         q_json = self.s.get(quote_url).json()
         head = "# >>Quote of The Day<<"
         neck = f"*from: {q_json['data']['author'].strip()}*"
-        body = q_json['data']['content']
+        body = q_json['data']['content']+'\n' + q_json['data']['translation']
         # body 部分每一行要加 >
         body = "\n\r\n\r".join(map(lambda s: "> " + s, body.split("\n")))
 
