@@ -53,7 +53,7 @@ class Agent():
         content = "\n\r\n\r".join([
             "# >>朝花惜时打卡帖<<",
             "- **注意事项：**只有早上 5-8 点截图打卡才作数，其余不算哦～",
-            "- **活动详情：** >>[点我了解](https://www.shanbay.com/team/thread/381970/3123197/)",
+            "- **活动详情：** >>[点我了解](https://www.shanbay.com/forum/thread/3137629/)",
             *self.add_foot()
         ])
 
