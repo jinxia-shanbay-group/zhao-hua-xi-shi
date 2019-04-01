@@ -16,7 +16,12 @@
     - [zhao-hua-xi-shi-checkin-log](https://github.com/jinxia-shanbay-group/zhao-hua-xi-shi-checkin-log)
 
 - Install deps
-```
-pip3 install -r requirements.txt
-```
+    ```
+    pip3 install -r requirements.txt
+    ```
+
+- Configure
+
+    use [`config_tmpl.py`](./config_tmpl.py) to configure and rename it to `config.py`.
+
 - Use `crontab`
