@@ -72,18 +72,26 @@ class Shanbay():
             "members": members      参与人员
         }
         """
-        thread_url = f"https://www.shanbay.com/team/thread/{self.team_id}/{thread_id}/"
-        html = self.s.get(thread_url).text
-        soup = BeautifulSoup(html, 'lxml')
-        title = soup.find(id="threadtitle").text.strip()
-
-        threads = soup.find_all(class_="post row")
-        content = threads[0].find(class_="post-content-todo").text.strip()
         members = []
-        for row in threads:
-            nickname = row.find(class_="userinfo row").find(class_="span3").text.strip()
-            if not nickname in members:
-                members.append(nickname)
+        for i in range(1,1000):
+            thread_url = f"https://www.shanbay.com/team/thread/{self.team_id}/{thread_id}/?page={i}"
+            res = self.s.get(thread_url)
+            # only one page
+            if res.status_code == 404:
+                break
+
+            html = res.text
+            soup = BeautifulSoup(html, 'lxml')
+            title = soup.find(id="threadtitle").text.strip()
+
+            threads = soup.find_all(class_="post row")
+            # content is only in the first page
+            if i==1:
+                content = threads[0].find(class_="post-content-todo").text.strip()
+            for row in threads:
+                nickname = row.find(class_="userinfo row").find(class_="span3").text.strip()
+                if not nickname in members:
+                    members.append(nickname)
 
         threader, members = members[0], members[1:]
 
@@ -152,4 +160,4 @@ if __name__ == '__main__':
     print(sb.id_int)
     print(sb.team_id)
     print(sb.forum_id)
-    print(sb.get_thread("3128002"))
+    print(sb.get_thread("3138247"))
