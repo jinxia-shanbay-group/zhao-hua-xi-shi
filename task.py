@@ -77,11 +77,11 @@ class Agent():
         if not os.path.exists(checkin_logfile):
             header = "|".join(["",
                                "date",
-                               *self.status.values(),
+                               *self.status.keys(),
                                "\n"
                                ])
             necker = "|".join(["",
-                               *["---"] * len(self.status),
+                               *["---"] * (len(self.status)+1),
                                "\n"
                                ])
             with open(checkin_logfile, 'w') as f:

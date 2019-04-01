@@ -27,7 +27,7 @@ def test_task():
     spider = Spider()
     agent = Agent(shanbay, spider)
 
-    agent.thread_id = "3132893"
+    agent.thread_id = "3138247"
     agent.add_foot()
     agent.online_check()
     agent.local_record()
