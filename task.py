@@ -125,7 +125,7 @@ class Agent():
             content = "全体完成打卡，撒花～"
         else:
             count = len(self.status.values()) - sum(self.status.values())
-            content = f"遗憾，有{count}位同学未完成打卡，因此，将会在活动群里被施以“爆”刑。"
+            content = f"遗憾，有{count}位同学未完成打卡。"
         content = f"今日活动报告：\n\r\n\r{content}"
 
         self.shanbay.reply_thread(self.thread_id, content)
