@@ -59,7 +59,7 @@ class Agent():
 
         self.thread_id = self.shanbay.new_thread(title, content)
         logging.info(f"[thread id]: {self.thread_id}")
-
+        time.sleep(0.5)
         self.shanbay.set_thread(self.thread_id, "activity")
 
     def online_check(self):
