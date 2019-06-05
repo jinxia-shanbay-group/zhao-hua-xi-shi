@@ -49,7 +49,7 @@ class Agent():
 
     def create_thread(self):
         """创建打卡帖"""
-        title = self.ctime.strftime("朝花惜时【%m.%d】🌸")
+        title = self.ctime.strftime("朝花惜时【%m.%d】")
         content = "\n\r\n\r".join([
             "# >>朝花惜时打卡帖<<",
             "- **注意事项：**只有早上 5-8 点截图打卡才作数，其余不算哦～",
@@ -72,7 +72,8 @@ class Agent():
 
     def local_record(self):
         """将查卡情况写进 markdown 文件"""
-        checkin_logfile = self.ctime.strftime(os.path.join(checkin_log_path, "%Y-%m.md"))
+        checkin_logfile = self.ctime.strftime(
+            os.path.join(checkin_log_path, "%Y-%m.md"))
 
         if not os.path.exists(checkin_logfile):
             header = "|".join(["",
@@ -107,13 +108,13 @@ class Agent():
 
     def git_pull(self):
         "pull first"
-        cmd = f"cd {checkin_log_path} && git pull"
+        cmd = f"cd {checkin_log_path} && git pull origin master"
         os.popen(cmd)
 
     def git_push(self):
         """push 到 GitHub"""
         date = self.ctime.strftime("%Y-%m-%d")
-        cmd = f"cd {checkin_log_path} && git add . && git commit -m 'checkin log: {date}' && git push -f"
+        cmd = f"cd {checkin_log_path} && git add . && git commit -m 'checkin log: {date}' && git push --force --all"
         p = os.popen(cmd)
         msg = p.read()
         logging.info(f"[git push result]: {msg}")
