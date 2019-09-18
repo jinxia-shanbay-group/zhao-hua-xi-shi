@@ -35,12 +35,14 @@ class Shanbay():
 
     def get_team(self):
         """访问 我的空间 页面，拿到小组id"""
-        html = self.s.get(f"https://web.shanbay.com/web/users/{self.id_int}/zone").text
+        html = self.s.get(
+            f"https://web.shanbay.com/web/users/{self.id_int}/zone").text
         soup = BeautifulSoup(html, "lxml")
 
         # 没有加入小组
         try:
-            href = soup.find(class_="team").find('a').get_attribute_list("href")[0]
+            href = soup.find(class_="team").find(
+                'a').get_attribute_list("href")[0]
             team_id = re.findall(r'detail/(\d+)/', href)[0]
             logging.info(f"[get team id]: {href}")
             return team_id
@@ -73,7 +75,7 @@ class Shanbay():
         }
         """
         members = []
-        for i in range(1,1000):
+        for i in range(1, 1000):
             thread_url = f"https://www.shanbay.com/team/thread/{self.team_id}/{thread_id}/?page={i}"
             res = self.s.get(thread_url)
             # only one page
@@ -86,10 +88,12 @@ class Shanbay():
 
             threads = soup.find_all(class_="post row")
             # content is only in the first page
-            if i==1:
-                content = threads[0].find(class_="post-content-todo").text.strip()
+            if i == 1:
+                content = threads[0].find(
+                    class_="post-content-todo").text.strip()
             for row in threads:
-                nickname = row.find(class_="userinfo row").find(class_="span3").text.strip()
+                nickname = row.find(class_="userinfo row").find(
+                    class_="span3").text.strip()
                 if not nickname in members:
                     members.append(nickname)
 

@@ -9,6 +9,7 @@ from spider import Spider
 from config import USERNAME
 from config import PASSWORD
 from config import MEMBERS
+from config import QING_JIA
 
 
 class Agent():
@@ -19,10 +20,6 @@ class Agent():
         self.shanbay.login()
         # 新帖子的id
         self.thread_id = ""
-        # 成员打卡情况
-        self.status = {}
-        # 总体情况
-        self.all_status = False
 
     def add_foot(self):
         """构造帖子附加内容"""
@@ -64,25 +61,31 @@ class Agent():
 
     def online_check(self):
         """ 检查打卡情况 """
-        members = self.shanbay.get_thread(self.thread_id)['members']
-        self.status = {m: m in members for m in MEMBERS}
-        self.all_status = all(self.status.values())
-        # 查卡结果
-        logging.info(f"[check result]: {self.status}")
+        thread = self.shanbay.get_thread(self.thread_id)
+        result = {}
+        for m in MEMBERS:
+            if m in QING_JIA:
+                result[m] = 2
+            elif m in thread['members']:
+                result[m] = 1
+            else:
+                result[m] = 0
+        return result
 
-    def local_record(self):
+    def local_record(self, result):
         """将查卡情况写进 markdown 文件"""
+        """There must be some improvements"""
         checkin_logfile = self.ctime.strftime(
             os.path.join(checkin_log_path, "%Y-%m.md"))
 
         if not os.path.exists(checkin_logfile):
             header = "|".join(["",
                                "date",
-                               *self.status.keys(),
+                               *result.keys(),
                                "\n"
                                ])
             necker = "|".join(["",
-                               *["---"] * (len(self.status)+1),
+                               *["---"] * (len(result)+1),
                                "\n"
                                ])
             with open(checkin_logfile, 'w') as f:
@@ -93,13 +96,15 @@ class Agent():
             line = f.readline().strip()
             names = list(map(lambda x: x.strip(), line.split("|")[2:-1]))
 
-        flag = {True: "✔️", False: "❌"}
+        # 0：缺卡，1: 打卡，2：请假
+        flag = ["❌", "✔️ ", "🚫"]
         # 每个人的打卡状态 {"who":True/False, ...}
-        result = [self.status.get(n) for n in names]
+        status = [result.get(n) for n in names]
+        print(status)
 
         record = "|".join(["",
                            self.ctime.strftime("%m/%d"),
-                           *[flag[s] for s in result],
+                           *[flag[s] for s in status],
                            "\n"
                            ])
 
@@ -108,24 +113,25 @@ class Agent():
 
     def git_pull(self):
         "pull first"
-        cmd = f"cd {checkin_log_path} && git pull origin master"
+        cmd = f"cd {checkin_log_path} && git pull -f"
         os.popen(cmd)
 
     def git_push(self):
         """push 到 GitHub"""
         date = self.ctime.strftime("%Y-%m-%d")
-        cmd = f"cd {checkin_log_path} && git add . && git commit -m 'checkin log: {date}' && git push --force --all"
+        cmd = f"cd {checkin_log_path} && git add . && git commit -m 'checkin log: {date}' && git push -f"
         p = os.popen(cmd)
         msg = p.read()
         logging.info(f"[git push result]: {msg}")
         p.close()
 
-    def online_report(self):
+    def online_report(self, result):
         """在当日的帖子下回复总结"""
-        if self.all_status:
+        all_status = all(result.values())
+        if all_status:
             content = "全体完成打卡，撒花～"
         else:
-            count = len(self.status.values()) - sum(self.status.values())
+            count = len(result.values()) - sum(result.values())
             content = f"遗憾，有{count}位同学未完成打卡。"
         content = f"今日活动报告：\n\r\n\r{content}"
 
@@ -152,8 +158,8 @@ if __name__ == '__main__':
     time.sleep(3600 * 3 + 10)
 
     # 查卡
-    agent.online_check()
-    agent.online_report()
+    result = agent.online_check()
+    agent.online_report(result)
     agent.git_pull()
-    agent.local_record()
+    agent.local_record(result)
     agent.git_push()

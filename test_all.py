@@ -29,5 +29,5 @@ def test_task():
 
     agent.thread_id = "3138247"
     agent.add_foot()
-    agent.online_check()
-    agent.local_record()
+    result = agent.online_check()
+    agent.local_record(result)
