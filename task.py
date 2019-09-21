@@ -127,8 +127,8 @@ class Agent():
 
     def online_report(self, result):
         """在当日的帖子下回复总结"""
-        all_status = all(result.values())
-        if all_status:
+        absence = any(result.values() == 0)
+        if not absence:
             content = "全体完成打卡，撒花～"
         else:
             count = len(result.values()) - sum(result.values())
