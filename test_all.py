@@ -8,7 +8,7 @@ from task import Agent
 def test_shanbay():
     sb = Shanbay(USERNAME, PASSWORD)
     sb.login()
-    print(sb.id_int)
+    print(sb.user_id)
     print(sb.team_id)
     print(sb.forum_id)
     print(sb.get_thread("3128002"))

@@ -32,10 +32,11 @@ class Agent():
                 "---",
                 *self.spider.get_pic().values()
             ]
+            logging.error(f"build foot content successfully")
+            return foot
         except Exception as e:
-            foot = []
-            logging.error(f"[build foot content failed]: {e}")
-        return foot
+            logging.error(f"build foot content failed: {e}")
+            return None
 
     @property
     def ctime(self):
@@ -55,7 +56,7 @@ class Agent():
         ])
 
         self.thread_id = self.shanbay.new_thread(title, content)
-        logging.info(f"[thread id]: {self.thread_id}")
+        logging.info(f"create a new thread: {self.thread_id}")
         time.sleep(0.5)
         self.shanbay.set_thread(self.thread_id, "activity")
 
@@ -122,7 +123,7 @@ class Agent():
         cmd = f"cd {checkin_log_path} && git add . && git commit -m 'checkin log: {date}' && git push -f"
         p = os.popen(cmd)
         msg = p.read()
-        logging.info(f"[git push result]: {msg}")
+        logging.info(f"git push result: {msg}")
         p.close()
 
     def online_report(self, result):
@@ -144,7 +145,7 @@ logfile = os.path.join(curr_path, "task.log")
 logging.basicConfig(filename=logfile,
                     level='INFO',
                     format="%(asctime)s %(filename)s [%(funcName)s] [line: %(lineno)d]  %(message)s",
-                    filemode='w')
+                    filemode='a')
 
 if __name__ == '__main__':
     # 发帖
