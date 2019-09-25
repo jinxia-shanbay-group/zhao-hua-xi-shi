@@ -129,10 +129,10 @@ class Agent():
     def online_report(self, result):
         """在当日的帖子下回复总结"""
         if 0 in result.values():
-            content = "全体完成打卡，撒花～"
-        else:
             count = len(result.values()) - sum(result.values())
             content = f"遗憾，有{count}位同学未完成打卡。"
+        else:
+            content = "全体完成打卡，撒花～"
         content = f"今日活动报告：\n\r\n\r{content}"
 
         self.shanbay.reply_thread(self.thread_id, content)
