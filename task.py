@@ -47,7 +47,7 @@ class Agent():
 
     def create_thread(self):
         """创建打卡帖"""
-        title = self.ctime.strftime("朝花惜时【%m.%d】")
+        title = self.ctime.strftime("🌸朝花惜时【%m.%d】")
         content = "\n\r\n\r".join([
             "# >>朝花惜时打卡帖<<",
             "- **注意事项：**只有早上 5-8 点截图打卡才作数，其余不算哦～",
