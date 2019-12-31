@@ -33,6 +33,9 @@ class Shanbay():
         self.team_id = self._get_team_id()
         self.forum_id = self._get_forum_id()
 
+    def login_by_cookies():
+        ...
+
     def _get_team_id(self):
         """访问 我的空间 页面，拿到小组id"""
         url = f"https://web.shanbay.com/web/users/{self.user_id}/zone"
@@ -233,5 +236,5 @@ if __name__ == '__main__':
     print(sb.user_id)
     print(sb.team_id)
     print(sb.forum_id)
-    print(sb.get_thread("3138247"))
-    sb.check()
+    # print(sb.get_thread("3138247"))
+    # sb.check()

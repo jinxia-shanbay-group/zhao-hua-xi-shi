@@ -2,3 +2,5 @@ USERNAME = ""
 PASSWORD = ""
 
 MEMBERS = []
+
+QING_JIA = []
